@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ToDo Checklist</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="checklist-container">
+    <div class="checklist-title">ToDo List</div>
+
+    <!-- ✅ Lista de tareas -->
+    <div th:each="todo : ${todos}" class="checklist-item" style="display: flex; justify-content: space-between; align-items: center;">
+        <form th:action="@{/toggle}" method="post" style="display: flex; align-items: center; flex: 1;">
+            <input type="hidden" name="id" th:value="${todo.id}" />
+            <input type="checkbox"
+                   th:id="'todo-' + ${todo.id}"
+                   class="checklist-checkbox"
+                   th:checked="${todo.completed}"
+                   onchange="this.form.submit()" />
+            <label th:for="'todo-' + ${todo.id}" th:text="${todo.title}" class="checklist-label" style="margin-left: 10px;"></label>
+        </form>
+        <div style="display: flex; gap: 5px;">
+            <a th:href="@{/{id}(id=${todo.id})}" class="btn btn-sm btn-outline-primary">✏️</a>
+            <a th:href="@{/delete/{id}(id=${todo.id})}" class="btn btn-sm btn-outline-danger">🗑️</a>
+        </div>
+    </div>
+
+    <!-- ✅ Formulario para agregar tarea -->
+    <form th:action="@{/save}" method="post" th:object="${todo}" class="checklist-item" style="display: flex; align-items: center;">
+        <input type="hidden" th:field="*{id}" />
+        <input type="checkbox" th:field="*{completed}" class="checklist-checkbox" />
+        <input type="text"
+               th:field="*{title}"
+               placeholder="Agregar nueva tarea..."
+               style="border:none; border-bottom: 1px solid #ccc; background: none; outline: none; flex: 1; margin-left: 10px;"
+               required />
+        <button type="submit" style="display: none;"></button>
+    </form>
+</div>
+
+</body>
+</html>
